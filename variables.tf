@@ -4,6 +4,6 @@ variable "server_port" {
   default = "8080"
 }
 
-output "public_ip" {
-  value = "http://${aws_instance.example.public_ip}:${var.server_port}"
+output "elb_dns_name" {
+  value = "http://${aws_elb.example.dns_name}"
 }
