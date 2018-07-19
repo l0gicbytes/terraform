@@ -7,6 +7,7 @@ terraform {
     bucket = "mike-terraform-state.pom.com"
     key = "bucket_test/terraform.tfstate"
     region = "us-east-1"
+    dynamodb_table = "tfstate"
 #    encrypt = true
   }
 }
@@ -28,6 +29,19 @@ resource "aws_s3_bucket" "terraform_state" {
     lifecycle {
       prevent_destroy = true
     }
+}
+
+resource "aws_dynamodb_table" "dyn_tf_state" {
+  name = "tfstate"
+  read_capacity = 5
+  write_capacity = 5
+  hash_key = "LockID"
+
+  attribute {
+    name = "LockID"
+    type = "S"
+  }
+
 }
 
 /*output "s3_bucket_arn" {
