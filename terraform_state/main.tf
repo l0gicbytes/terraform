@@ -10,7 +10,7 @@ terraform {
     region = "us-east-1"
 // Dynamo DB must be created before enabling locking, primary key must be LockID
     dynamodb_table = "tfstate"
-// Encryption set at the bucket level    
+// Encryption set at the bucket level
 #    encrypt = true
   }
 }
