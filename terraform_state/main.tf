@@ -29,3 +29,11 @@ resource "aws_s3_bucket" "terraform_state" {
       prevent_destroy = true
     }
 }
+
+output "s3_bucket_arn" {
+  value = "${aws_s3_bucket.terraform_state.bucket_domain_name}"
+}
+
+output "s3_bucket_region" {
+  value = "${aws_s3_bucket.terraform_state.region}"
+}
