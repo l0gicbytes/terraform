@@ -30,10 +30,10 @@ resource "aws_s3_bucket" "terraform_state" {
     }
 }
 
-output "s3_bucket_arn" {
+/*output "s3_bucket_arn" {
   value = "${aws_s3_bucket.terraform_state.bucket_domain_name}"
 }
 
 output "s3_bucket_region" {
   value = "${aws_s3_bucket.terraform_state.region}"
-}
+}*/
