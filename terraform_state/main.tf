@@ -2,12 +2,15 @@ provider "aws" {
   region = "us-east-1"
 }
 
+// when updating backend make sure to initialize, terraform init
 terraform {
   backend "s3" {
     bucket = "mike-terraform-state.pom.com"
     key = "bucket_test/terraform.tfstate"
     region = "us-east-1"
+// Dynamo DB must be created before enabling locking, primary key must be LockID
     dynamodb_table = "tfstate"
+// Encryption set at the bucket level    
 #    encrypt = true
   }
 }
