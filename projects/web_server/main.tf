@@ -3,8 +3,7 @@ provider "aws" {
 }
 
 resource "aws_launch_configuration" "example" {
-//  image_id = "ami-6a003c0f" //us-east-2 ubuntu
-  image_id = "ami-759bc50a" //us-east-1 ubuntu
+  image_id = "${var.ami_id}"
   instance_type = "t2.micro"
   security_groups = ["${aws_security_group.instance.id}"]
 
@@ -45,8 +44,8 @@ resource "aws_autoscaling_group" "example" {
   load_balancers = ["${aws_elb.example.name}"]
   health_check_type = "ELB"
 
-  min_size = 2
-  max_size = 5
+  min_size = "${var.autoscale_min}"
+  max_size = "${var.autoscale_max}"
 
   tag {
     key = "Name"
