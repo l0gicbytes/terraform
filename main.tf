@@ -3,7 +3,8 @@ provider "aws" {
 }
 
 resource "aws_launch_configuration" "example" {
-  image_id = "ami-6a003c0f"
+//  image_id = "ami-6a003c0f" //us-east-2 ubuntu
+  image_id = "ami-759bc50a" //us-east-1 ubuntu
   instance_type = "t2.micro"
   security_groups = ["${aws_security_group.instance.id}"]
 

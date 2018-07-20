@@ -3,7 +3,3 @@ variable "server_port" {
   type    = "string"
   default = "8080"
 }
-
-output "elb_dns_name" {
-  value = "http://${aws_elb.example.dns_name}"
-}
