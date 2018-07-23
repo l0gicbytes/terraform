@@ -18,7 +18,7 @@ resource "aws_db_instance" "example" {
   engine = "mysql"
   allocated_storage = 10
   instance_class = "db.t2.micro"
-  name = "example-database"
+  name = "example_database"
   #identifier = "example-database" // should be optional
   username = "admin"
   password = "${data.aws_secretsmanager_secret_version.server_pw.secret_string}"
