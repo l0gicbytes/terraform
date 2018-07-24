@@ -22,7 +22,9 @@ resource "aws_launch_configuration" "example" {
 
   user_data = <<-EOF
               #!/bin/bash
-              echo "Hello, World" > index.html
+              echo "Hello, World!" > index.html
+              echo "${data.terraform_remote_state.db.endpoint}" >> index.html
+              echo "${data.terraform_remote_state.db.Secret}" >> index.html
               nohup busybox httpd -f -p "${var.server_port}" &
               EOF
   lifecycle {
