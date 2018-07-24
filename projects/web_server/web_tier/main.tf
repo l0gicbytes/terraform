@@ -20,13 +20,15 @@ resource "aws_launch_configuration" "example" {
   instance_type = "t2.micro"
   security_groups = ["${aws_security_group.instance.id}"]
 
-  user_data = <<-EOF
-              #!/bin/bash
-              echo "Hello, World!" > index.html
-              echo "${data.terraform_remote_state.db.endpoint}" >> index.html
-              echo "${data.terraform_remote_state.db.Secret}" >> index.html
-              nohup busybox httpd -f -p "${var.server_port}" &
-              EOF
+  data "template_file" "user_data" {
+    template = "${file("user_data.sh")}"
+
+    vars {
+      db_endpoint = "${data.terraform_remote_state.db.endpoint}"
+      db_password = "${data.terraform_remote_state.db.secret}"
+    }
+  }
+    
   lifecycle {
     create_before_destroy = true
   }
