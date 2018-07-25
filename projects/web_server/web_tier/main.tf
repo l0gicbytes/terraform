@@ -15,20 +15,22 @@ terraform {
   }
 }
 
+data "template_file" "user_data" {
+    template = "${file("user-data.sh")}"
+
+    vars {
+      server_port = "${var.server_port}"
+      db_endpoint = "${data.terraform_remote_state.db.endpoint}"
+      db_password = "${data.terraform_remote_state.db.Secret}"
+    }
+  }
+
 resource "aws_launch_configuration" "example" {
   image_id = "${var.ami_id}"
   instance_type = "t2.micro"
   security_groups = ["${aws_security_group.instance.id}"]
+  user_data = "${data.template_file.user_data.rendered}"
 
-  data "template_file" "user_data" {
-    template = "${file("user_data.sh")}"
-
-    vars {
-      db_endpoint = "${data.terraform_remote_state.db.endpoint}"
-      db_password = "${data.terraform_remote_state.db.secret}"
-    }
-  }
-    
   lifecycle {
     create_before_destroy = true
   }
