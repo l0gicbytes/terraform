@@ -1,4 +1,4 @@
-variable "server_port" {
+/*variable "server_port" {
   description = "Port to be used for busybox to listen on"
   type    = "string"
   default = "8080"
@@ -21,4 +21,5 @@ variable "autoscale_max" {
   description = "maximum number of instances in the autoscale group"
   type    = "string"
   default = "5"
-}
+}*/
+

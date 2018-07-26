@@ -1,8 +1,9 @@
 data "terraform_remote_state" "db" {
   backend = "s3"
+
   config {
-    bucket = "mike-terraform-state.pom.com"
-    key = "projects/web_server/database/terraform.tfstate"
-    region = "us-east-1"
+    bucket = "${var.db_remote_state_bucket}"
+    key    = "${var.db_remote_state_key}"
+    region = "${var.db_remote_state_region}"
   }
 }

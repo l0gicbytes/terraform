@@ -24,6 +24,11 @@ variable "autoscale_max" {
   default     = "5"
 }
 
+variable "instance_type" {
+  description = "specify the instance type"
+  default     = "t2-micro"
+}
+
 variable "cluster_name" {
   description = "The name to use for all cluster resources"
 }
@@ -35,3 +40,28 @@ variable "db_remote_state_bucket" {
 variable "db_remote_state_key" {
   description = "The path for the database's remote state file in S3"
 }
+
+variable "db_remote_state_region" {
+  description = "region of remote state bucket"
+  default     = "us-east-1"
+}
+
+/*variable "dynamo_db_table" {
+  description = "Dynamo table for state locking"
+  default     = "tfstate"
+}
+
+variable "s3_backend_bucket" {
+  description = "s3 backend for storing terraform state"
+  default     = "mike-terraform-state.pom.com"
+}
+
+variable "s3_backend_key" {
+  description = "path to terraform.state /application/web-service/terraform.tfstate"
+}
+
+variable "s3_backend_region" {
+  description = "region for backend"
+  default     = "us-east-1"
+}*/
+

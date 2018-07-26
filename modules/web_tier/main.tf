@@ -1,20 +1,20 @@
 // when updating backend make sure to initialize, terraform init
-terraform {
+/*terraform {
   backend "s3" {
-    bucket = "mike-terraform-state.pom.com"
-    key    = "projects/web_server/web_tier/terraform.tfstate"
-    region = "us-east-1"
+    bucket = "${var.s3_backend_bucket}"
+    key    = "${var.s3_backend_key}"
+    region = "${var.s3_backend_region}"
 
     // Dynamo DB must be created before enabling locking, primary key must be LockID
-    dynamodb_table = "tfstate"
+    dynamodb_table = "${var.dynamo_db_table}"
 
     // Encryption set at the bucket level
     #    encrypt = true
   }
-}
+}*/
 
 data "template_file" "user_data" {
-  template = "${file("user-data.sh")}"
+  template = "${file("${path.module}/user-data.sh")}"
 
   vars {
     server_port = "${var.server_port}"
@@ -25,7 +25,7 @@ data "template_file" "user_data" {
 
 resource "aws_launch_configuration" "example" {
   image_id        = "${var.ami_id}"
-  instance_type   = "t2.micro"
+  instance_type   = "${var.instance_type}"
   security_groups = ["${aws_security_group.instance.id}"]
   user_data       = "${data.template_file.user_data.rendered}"
 
@@ -35,7 +35,7 @@ resource "aws_launch_configuration" "example" {
 }
 
 resource "aws_security_group" "instance" {
-  name = "terraform-example-instance"
+  name = "${var.cluster_name}-instance"
 
   ingress {
     from_port   = "${var.server_port}"
@@ -49,7 +49,7 @@ resource "aws_security_group" "instance" {
   }
 
   tags {
-    Name = "terraform-example-SG"
+    Name = "${var.cluster_name}-example-SG"
   }
 }
 
@@ -67,13 +67,13 @@ resource "aws_autoscaling_group" "example" {
 
   tag {
     key                 = "Name"
-    value               = "terraform-asg-example"
+    value               = "${var.cluster_name}"
     propagate_at_launch = true
   }
 }
 
 resource "aws_elb" "example" {
-  name               = "terraform-asg-example"
+  name               = "${var.cluster_name}"
   availability_zones = ["${data.aws_availability_zones.all.names}"]
   security_groups    = ["${aws_security_group.elb.id}"]
 
@@ -94,19 +94,25 @@ resource "aws_elb" "example" {
 }
 
 resource "aws_security_group" "elb" {
-  name = "${var.cluster_name-elb}"
+  name = "${var.cluster_name}-elb"
+}
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+resource "aws_security_group_rule" "allow_http_inbound" {
+  type              = "ingress"
+  security_group_id = "${aws_security_group.elb.id}"
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
+  from_port   = 80
+  to_port     = 80
+  protocol    = "tcp"
+  cidr_blocks = ["0.0.0.0/0"]
+}
+
+resource "aws_security_group_rule" "allow_all_outbound" {
+  type              = "egress"
+  security_group_id = "${aws_security_group.elb.id}"
+
+  from_port   = 0
+  to_port     = 0
+  protocol    = "-1"
+  cidr_blocks = ["0.0.0.0/0"]
 }
