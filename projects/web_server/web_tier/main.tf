@@ -25,7 +25,7 @@ module "web_tier" {
 
   db_remote_state_key = "projects/web_server/database/terraform.tfstate"
 
-  instance_type = "t2.small"
+  instance_type = "t2.nano"
 }
 
 resource "aws_autoscaling_schedule" "scale_out_during_business_hours" {
