@@ -1,3 +1,4 @@
+//use the remote state of the DB terraform to pull information
 data "terraform_remote_state" "db" {
   backend = "s3"
 
